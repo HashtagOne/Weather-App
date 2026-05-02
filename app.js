@@ -8,18 +8,24 @@ const temp = document.querySelector("#temperature");
 const desc = document.querySelector("#description");
 const humidity = document.querySelector("#humidity");
 const windSpeed = document.querySelector("#wind-speed");
-
+const skeleton = document.querySelector("#skeleton");
 function searchFunction() {
-
     const city = cityInput.value.trim();
-
     if (!city) return
     
+    skeleton.classList.remove("hidden");
+    weatherDisplay.classList.add("hidden");
+    errorMessage.classList.add("hidden");
+
+
     const apiKey = "46ed7bd01aba066eae1f67de0ac177ab";
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
+   
+   const minimumDelay = new Promise(resolve => setTimeout(resolve, 1500));
+   
+    Promise.all([fetch(url).then(r => r.json()), minimumDelay])
+   .then(([data]) => {
+    skeleton.classList.add("hidden");
         if (data.cod !== 200) {
             showError();
             return;
